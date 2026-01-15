@@ -1,0 +1,23 @@
+const tg = window.Telegram.WebApp;
+tg.expand();
+
+const user = tg.initDataUnsafe.user;
+document.getElementById("username").innerText = user.username || user.first_name;
+
+const openCaseBtn = document.getElementById("open-case");
+const inventoryDiv = document.getElementById("inventory");
+
+openCaseBtn.addEventListener("click", () => {
+  const reward = "🎁 Подарок"; // заглушка
+  const p = document.createElement("p");
+  p.innerText = reward;
+  inventoryDiv.appendChild(p);
+
+  let balance = parseFloat(document.getElementById("balance").innerText);
+  if (balance >= 0.25) {
+    balance -= 0.25;
+    document.getElementById("balance").innerText = balance.toFixed(2);
+  } else {
+    alert("Недостаточно TON!");
+  }
+});
