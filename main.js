@@ -3,7 +3,7 @@ const tg = window.Telegram.WebApp;
 tg.expand(); // расширяем окно
 
 // Получаем данные пользователя из Telegram
-const user = tg.initDataUnsafe.user;
+const user = window.Telegram.WebApp.initDataUnsafe.user;
 document.getElementById("username").innerText = user.username || user.first_name;
 
 // Баланс пользователя (для примера 10 TON)
