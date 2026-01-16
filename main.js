@@ -6,7 +6,7 @@ const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
 // Селекторы
 const walletStatus = document.getElementById("wallet-status");
 const connectBtn = document.getElementById("connect-wallet");
-const OWNER_WALLET = "ВАШ_TON_АДРЕС"; // твой кошелёк для пополнений
+const OWNER_WALLET = "UQAFXBXzBzau6ZCWzruiVrlTg3HAc8MF6gKIntqTLDifuWOi"; // твой кошелёк для пополнений
 
 // Обновление UI
 function updateWalletUI(wallet) {
