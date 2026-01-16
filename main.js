@@ -1,3 +1,4 @@
+alert("JS STARTED");
 document.addEventListener("DOMContentLoaded", () => {
 
   let tg = null;
