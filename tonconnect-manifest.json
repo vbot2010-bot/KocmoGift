@@ -1,5 +1,7 @@
 {
   "name": "KocmoGift",
-  "url": "https://kocmo-gift-g7bj-git-main-kocmogift.vercel.app/",
-  "iconUrl": "https://YOUR_SITE.vercel.app/icon.png"
+  "description": "Мини-приложение для Telegram с TON",
+  "icons": ["icon.png"],
+  "redirect": "https://meek-bubblegum-52c533.netlify.app//",
+  "categories": ["game"]
 }
