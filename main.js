@@ -1,6 +1,46 @@
         document.addEventListener("DOMContentLoaded", () => {
 
-  // Подключение TonConnect
+  /* ---------- Навигация ---------- */
+  const home = document.getElementById("home");
+  const profile = document.getElementById("profile");
+
+  document.getElementById("btn-home").onclick = () => {
+    home.classList.add("active");
+    profile.classList.remove("active");
+  };
+
+  document.getElementById("btn-profile").onclick = () => {
+    profile.classList.add("active");
+    home.classList.remove("active");
+  };
+
+  /* ---------- Баланс и инвентарь ---------- */
+  let balance = 0;
+  const inventory = [];
+
+  const balanceEl = document.getElementById("balance");
+  const balanceProfile = document.getElementById("balance-profile");
+  const inventoryEl = document.getElementById("inventory");
+
+  function updateUI() {
+    balanceEl.textContent = balance;
+    balanceProfile.textContent = balance;
+    inventoryEl.innerHTML = inventory.map(i => `<div>${i}</div>`).join("");
+  }
+
+  /* ---------- Открытие кейса ---------- */
+  document.getElementById("open-case").onclick = () => {
+    if (balance < 1) {
+      alert("Недостаточно TON");
+      return;
+    }
+    balance -= 1;
+    const rewards = ["🎁 Gift", "💎 Diamond", "⚡ Energy"];
+    inventory.push(rewards[Math.floor(Math.random() * rewards.length)]);
+    updateUI();
+  };
+
+  /* ---------- TonConnect ---------- */
   const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
     manifestUrl: "https://kocmo-gift-g7bj-6i5hso085-kocmogift.vercel.app/tonconnect-manifest.json"
   });
@@ -9,7 +49,7 @@
   const connectBtn = document.getElementById("connect-wallet");
 
   function updateWalletUI(wallet) {
-    if(wallet){
+    if (wallet) {
       walletStatus.textContent = "✅ Кошелёк подключён";
       connectBtn.textContent = "Отключить кошелёк";
     } else {
@@ -18,27 +58,41 @@
     }
   }
 
-  // Обработчик кнопки подключения
   connectBtn.onclick = async () => {
-    try {
-      if(tonConnectUI.wallet){
-        await tonConnectUI.disconnect();
-        updateWalletUI(null);
-      } else {
-        // Добавляем короткую паузу для корректной работы на телефоне
-        await new Promise(r => setTimeout(r, 150));
-        const wallet = await tonConnectUI.connectWallet();
-        updateWalletUI(wallet);
-      }
-    } catch(e){
-      console.error("Ошибка подключения TonConnect:", e);
-      alert("Не удалось подключить кошелек. Попробуйте ещё раз.");
+    if (tonConnectUI.wallet) {
+      await tonConnectUI.disconnect();
+    } else {
+      await tonConnectUI.connectWallet();
     }
   };
 
-  // Слушаем изменения статуса
   tonConnectUI.onStatusChange(wallet => {
     updateWalletUI(wallet);
   });
 
+  /* ---------- Пополнение (РЕАЛЬНЫЕ TON) ---------- */
+  document.getElementById("deposit").onclick = async () => {
+    if (!tonConnectUI.wallet) {
+      alert("Сначала подключите кошелёк");
+      return;
+    }
+
+    try {
+      await tonConnectUI.sendTransaction({
+        validUntil: Math.floor(Date.now() / 1000) + 300,
+        messages: [{
+          address: "UQAFXBXzBzau6ZCWzruiVrlTg3HAc8MF6gKIntqTLDifuWOi",
+          amount: "1000000000" // 1 TON в nanoTON
+        }]
+      });
+
+      balance += 1;
+      updateUI();
+      alert("Пополнение успешно!");
+    } catch (e) {
+      alert("Ошибка перевода");
+    }
+  };
+
+  updateUI();
 });
