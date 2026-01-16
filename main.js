@@ -55,3 +55,12 @@ tonConnectUI.onStatusChange(wallet => {
 
 // Изначально обновляем статус
 updateWalletUI(tonConnectUI.wallet);
+// Навигация между страницами
+function showPage(pageId) {
+  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+  document.getElementById(pageId).classList.add("active");
+}
+
+// Кнопки
+document.getElementById("btn-home").onclick = () => showPage("home");
+document.getElementById("btn-profile").onclick = () => showPage("profile");
