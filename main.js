@@ -37,6 +37,11 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   /* ---------- TonConnect ---------- */
+  if(typeof TON_CONNECT_UI === "undefined"){
+    alert("Ошибка: библиотека TonConnectUI не подключена!");
+    return;
+  }
+
   const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
     manifestUrl: "https://meek-bubblegum-52c533.netlify.app/tonconnect-manifest.json"
   });
@@ -54,15 +59,16 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Новый обработчик с проверкой и try/catch
   connectBtn.onclick = async () => {
+    if(!tonConnectUI){
+      alert("Ошибка: TonConnectUI не инициализирован");
+      return;
+    }
     try {
       if(tonConnectUI.wallet){
         await tonConnectUI.disconnect();
         updateWalletUI(null);
       } else {
-        // Ждём 100ms перед connect, чтобы Telegram корректно открыл окно
-        await new Promise(r => setTimeout(r, 100));
         const wallet = await tonConnectUI.connectWallet();
         updateWalletUI(wallet);
       }
@@ -72,9 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
-  tonConnectUI.onStatusChange(wallet => {
-    updateWalletUI(wallet);
-  });
+  tonConnectUI.onStatusChange(wallet => updateWalletUI(wallet));
 
   /* ---------- Пополнение баланса ---------- */
   document.getElementById("deposit").onclick = async () => {
@@ -87,7 +91,7 @@ document.addEventListener("DOMContentLoaded", () => {
         validUntil: Math.floor(Date.now() / 1000) + 300,
         messages: [{
           address: "UQAFXBXzBzau6ZCWzruiVrlTg3HAc8MF6gKIntqTLDifuWOi",
-          amount: "1000000000" // 1 TON в nanoTON
+          amount: "1000000000"
         }]
       });
       balance += 1;
