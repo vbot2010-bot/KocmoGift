@@ -2,7 +2,7 @@
 
   // Подключение TonConnect
   const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
-    manifestUrl: "https://meek-bubblegum-52c533.netlify.app/tonconnect-manifest.json"
+    manifestUrl: "https://kocmo-gift-g7bj-6i5hso085-kocmogift.vercel.app/tonconnect-manifest.json"
   });
 
   const walletStatus = document.getElementById("wallet-status");
