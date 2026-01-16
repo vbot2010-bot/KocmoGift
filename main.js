@@ -1,5 +1,16 @@
-const tg = window.Telegram.WebApp;
-tg.expand();
+document.addEventListener("DOMContentLoaded", () => {
+
+  let tg = null;
+  if (window.Telegram && window.Telegram.WebApp) {
+    tg = window.Telegram.WebApp;
+    tg.expand();
+  }
+
+  const user = tg?.initDataUnsafe?.user || {};
+  document.getElementById("username").innerText =
+    user.username || user.first_name || "—";
+  document.getElementById("user-id").innerText =
+    user.id || "—";
 
 /* ---------- Telegram user ---------- */
 const user = tg.initDataUnsafe.user || {};
