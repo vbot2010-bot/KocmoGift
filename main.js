@@ -61,6 +61,7 @@ connectBtn.onclick = async () => {
 tonConnectUI.onStatusChange(wallet => {
   updateWalletUI(wallet);
 });
+UQAFXBXzBzau6ZCWzruiVrlTg3HAc8MF6gKIntqTLDifuWOi
 
 /* ---------- Navigation ---------- */
 function showPage(page) {
