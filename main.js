@@ -32,7 +32,36 @@ document.getElementById("open-case").onclick = () => {
 const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
   manifestUrl: "https://kocmo-gift-git-main-kocmogift.vercel.app//tonconnect-manifest.json"
 });
+const OWNER_WALLET = "UQAFXBXzBzau6ZCWzruiVrlTg3HAc8MF6gKIntqTLDifuWOi";
 
+document.getElementById("deposit").onclick = async () => {
+  if (!tonConnectUI.wallet) {
+    alert("Сначала подключи кошелёк");
+    return;
+  }
+
+  const amountTON = 1;
+  const amountNano = amountTON * 1e9;
+
+  try {
+    await tonConnectUI.sendTransaction({
+      validUntil: Math.floor(Date.now() / 1000) + 300,
+      messages: [
+        {
+          address: OWNER_WALLET,
+          amount: amountNano.toString()
+        }
+      ]
+    });
+
+    balance += amountTON;
+    document.getElementById("balance").innerText = balance;
+    alert("Баланс пополнен!");
+
+  } catch {
+    alert("Платёж отменён");
+  }
+};
 const walletStatus = document.getElementById("wallet-status");
 const connectBtn = document.getElementById("connect-wallet");
 
