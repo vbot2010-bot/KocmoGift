@@ -1,44 +1,68 @@
-document.addEventListener("DOMContentLoadedconst tg = window.Telegram.WebApp;
+const tg = window.Telegram.WebApp;
 tg.expand();
 
-// Telegram user
-const user = tg.initDataUnsafe.user;
-
+/* ---------- Telegram user ---------- */
+const user = tg.initDataUnsafe.user || {};
 document.getElementById("username").innerText =
-  user?.username || user?.first_name || "—";
+  user.username || user.first_name || "—";
+document.getElementById("user-id").innerText = user.id || "—";
 
-document.getElementById("user-id").innerText = user?.id || "—";
-
-// Balance
+/* ---------- Balance (local) ---------- */
 let balance = 10;
 document.getElementById("balance").innerText = balance;
 
-// Inventory
+/* ---------- Inventory ---------- */
 const inventory = document.getElementById("inventory");
 
-// Open case
+/* ---------- Open case ---------- */
 document.getElementById("open-case").onclick = () => {
   if (balance < 1) {
     alert("Недостаточно TON");
     return;
   }
-
   balance -= 1;
   document.getElementById("balance").innerText = balance;
 
   const rewards = ["🎁 Gift", "💎 Diamond", "⚡ Energy"];
   const reward = rewards[Math.floor(Math.random() * rewards.length)];
-
   inventory.innerHTML += `<div>${reward}</div>`;
 };
 
-// Wallet (заглушка)
-document.getElementById("connect-wallet").onclick = () => {
-  document.getElementById("wallet-status").innerText =
-    "✅ Кошелёк будет подключён позже";
+/* ---------- TonConnect ---------- */
+const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+  manifestUrl: "https://YOUR_SITE.vercel.app/tonconnect-manifest.json"
+});
+
+const walletStatus = document.getElementById("wallet-status");
+const connectBtn = document.getElementById("connect-wallet");
+
+// обновление статуса
+function updateWalletUI(wallet) {
+  if (wallet) {
+    walletStatus.innerText = "✅ Кошелёк подключён";
+    connectBtn.innerText = "🔌 Отключить кошелёк";
+  } else {
+    walletStatus.innerText = "❌ Кошелёк не подключён";
+    connectBtn.innerText = "🔗 Подключить кошелёк";
+  }
+}
+
+// кнопка подключения
+connectBtn.onclick = async () => {
+  if (tonConnectUI.wallet) {
+    await tonConnectUI.disconnect();
+    updateWalletUI(null);
+  } else {
+    await tonConnectUI.connectWallet();
+  }
 };
 
-// Navigation
+// слушаем изменения
+tonConnectUI.onStatusChange(wallet => {
+  updateWalletUI(wallet);
+});
+
+/* ---------- Navigation ---------- */
 function showPage(page) {
   document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
   document.getElementById(page).classList.add("active");
