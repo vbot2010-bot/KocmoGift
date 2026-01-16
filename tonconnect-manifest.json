@@ -1,7 +1,7 @@
 {
   "name": "KocmoGift",
-  "description": "Мини-приложение для Telegram с TON",
-  "icons": ["icon.png"],
-  "redirect": "https://meek-bubblegum-52c533.netlify.app//",
+  "description": "Telegram Mini App с TON",
+  "icons": [],
+  "redirect": "https://meek-bubblegum-52c533.netlify.app/",
   "categories": ["game"]
 }
