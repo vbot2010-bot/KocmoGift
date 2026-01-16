@@ -7,7 +7,7 @@ document.getElementById("username").innerText =
   user.username || user.first_name || "—";
 document.getElementById("user-id").innerText = user.id || "—";
 
-/* ---------- Balance (local) ---------- */
+/* ---------- Balance ---------- */
 let balance = 10;
 document.getElementById("balance").innerText = balance;
 
@@ -30,11 +30,37 @@ document.getElementById("open-case").onclick = () => {
 
 /* ---------- TonConnect ---------- */
 const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
-  manifestUrl: "https://kocmo-gift.vercel.app//tonconnect-manifest.json"
+  manifestUrl: "https://YOUR_SITE.vercel.app/tonconnect-manifest.json"
 });
-const OWNER_WALLET = "UQAFXBXzBzau6ZCWzruiVrlTg3HAc8MF6gKIntqTLDifuWOi";
 
-document.getElementById("deposit").onclick = async () => {
+const walletStatus = document.getElementById("wallet-status");
+const connectBtn = document.getElementById("connect-wallet");
+const OWNER_WALLET = "UQAFXBXzBzau6ZCWzruiVrlTg3HAc8MF6gKIntqTLDifuWOi"; // сюда твой кошелёк
+const depositBtn = document.getElementById("deposit");
+
+/* ---------- Обновление UI ---------- */
+function updateWalletUI(wallet) {
+  if (wallet) {
+    walletStatus.innerText = "✅ Кошелёк подключён";
+    connectBtn.innerText = "🔌 Отключить кошелёк";
+  } else {
+    walletStatus.innerText = "❌ Кошелёк не подключён";
+    connectBtn.innerText = "🔗 Подключить кошелёк";
+  }
+}
+
+/* ---------- Кнопка подключения ---------- */
+connectBtn.onclick = async () => {
+  if (tonConnectUI.wallet) {
+    await tonConnectUI.disconnect();
+    updateWalletUI(null);
+  } else {
+    await tonConnectUI.connectWallet();
+  }
+};
+
+/* ---------- Пополнение ---------- */
+depositBtn.onclick = async () => {
   if (!tonConnectUI.wallet) {
     alert("Сначала подключи кошелёк");
     return;
@@ -63,36 +89,14 @@ document.getElementById("deposit").onclick = async () => {
   }
 };
 
-const walletStatus = document.getElementById("wallet-status");
-const connectBtn = document.getElementById("connect-wallet");
-
-// обновление статуса
-function updateWalletUI(wallet) {
-  if (wallet) {
-    walletStatus.innerText = "✅ Кошелёк подключён";
-    connectBtn.innerText = "🔌 Отключить кошелёк";
-  } else {
-    walletStatus.innerText = "❌ Кошелёк не подключён";
-    connectBtn.innerText = "🔗 Подключить кошелёк";
-  }
-}
-
-// кнопка подключения
-connectBtn.onclick = async () => {
-  if (tonConnectUI.wallet) {
-    await tonConnectUI.disconnect();
-    updateWalletUI(null);
-  } else {
-    await tonConnectUI.connectWallet();
-  }
-};
-
-// слушаем изменения
+/* ---------- Слушаем изменения кошелька ---------- */
 tonConnectUI.onStatusChange(wallet => {
-  updateWalletUI(wallet);}):
+  updateWalletUI(wallet);
+});
 
-/* ---------- Navigation ---------- */
+/* ---------- Навигация ---------- */
 function showPage(page) {
   document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
   document.getElementById(page).classList.add("active");
 }
+
