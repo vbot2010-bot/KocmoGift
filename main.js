@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-  // Telegram
+  // Телеграм
   const tg = window.Telegram.WebApp;
   tg.expand();
 
@@ -18,13 +18,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Навигация
   const pages = { home: "home", profile: "profile" };
-  function showPage(pageId) {
-    document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
-    document.getElementById(pageId).classList.add("active");
-  }
-
-  document.getElementById("btn-home").addEventListener("click", () => showPage(pages.home));
-  document.getElementById("btn-profile").addEventListener("click", () => showPage(pages.profile));
+  document.getElementById("btn-home").addEventListener("click", () => {
+    document.getElementById(pages.profile).classList.remove("active");
+    document.getElementById(pages.home).classList.add("active");
+  });
+  document.getElementById("btn-profile").addEventListener("click", () => {
+    document.getElementById(pages.home).classList.remove("active");
+    document.getElementById(pages.profile).classList.add("active");
+  });
 
   // TonConnect
   const OWNER_WALLET = "UQAFXBXzBzau6ZCWzruiVrlTg3HAc8MF6gKIntqTLDifuWOi";
@@ -59,10 +60,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   depositBtn.addEventListener("click", async () => {
-    if(!tonConnectUI.wallet) {
-      alert("Сначала подключи кошелек");
-      return;
-    }
+    if(!tonConnectUI.wallet) { alert("Сначала подключи кошелек"); return; }
     const amountTON = 1;
     const amountNano = amountTON * 1e9;
     try {
@@ -78,15 +76,12 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Открытие кейсов
   document.getElementById("open-case").addEventListener("click", () => {
     if(balance < 1) { alert("Недостаточно TON"); return; }
     balance -= 1;
     balanceEl.innerText = balance;
-
     const rewards = ["🎁 Gift", "💎 Diamond", "⚡ Energy"];
     const reward = rewards[Math.floor(Math.random() * rewards.length)];
     inventory.innerHTML += `<div>${reward}</div>`;
   });
-
 });
