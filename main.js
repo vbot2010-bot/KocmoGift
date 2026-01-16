@@ -42,8 +42,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /* ---------- TonConnect ---------- */
   const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
-    manifestUrl: "https://meek-bubblegum-52c533.netlify.app/?v=2"
-  });
+    manifestUrl: "https://meek-bubblegum-52c533.netlify.app/tonconnect-manifest.json"
+});
 
   const walletStatus = document.getElementById("wallet-status");
   const connectBtn = document.getElementById("connect-wallet");
