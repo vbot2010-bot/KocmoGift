@@ -1,25 +1,22 @@
 const tg = window.Telegram.WebApp;
 tg.expand();
 
-/* ---------- Telegram user ---------- */
+/* Telegram user */
 const user = tg.initDataUnsafe.user || {};
 document.getElementById("username").innerText =
   user.username || user.first_name || "—";
 document.getElementById("user-id").innerText = user.id || "—";
 
-/* ---------- Balance ---------- */
+/* Balance */
 let balance = 10;
 document.getElementById("balance").innerText = balance;
 
-/* ---------- Inventory ---------- */
+/* Inventory */
 const inventory = document.getElementById("inventory");
 
-/* ---------- Open case ---------- */
+/* Open case */
 document.getElementById("open-case").onclick = () => {
-  if (balance < 1) {
-    alert("Недостаточно TON");
-    return;
-  }
+  if (balance < 1) { alert("Недостаточно TON"); return; }
   balance -= 1;
   document.getElementById("balance").innerText = balance;
 
@@ -28,17 +25,17 @@ document.getElementById("open-case").onclick = () => {
   inventory.innerHTML += `<div>${reward}</div>`;
 };
 
-/* ---------- TonConnect ---------- */
+/* TonConnect */
 const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
   manifestUrl: "https://kocmo-gift-git-main-kocmogift.vercel.app//tonconnect-manifest.json"
 });
 
 const walletStatus = document.getElementById("wallet-status");
 const connectBtn = document.getElementById("connect-wallet");
-const OWNER_WALLET = "UQAFXBXzBzau6ZCWzruiVrlTg3HAc8MF6gKIntqTLDifuWOi"; // сюда твой кошелёк
+const OWNER_WALLET = "UQAFXBXzBzau6ZCWzruiVrlTg3HAc8MF6gKIntqTLDifuWOi";
 const depositBtn = document.getElementById("deposit");
 
-/* ---------- Обновление UI ---------- */
+/* UI обновление */
 function updateWalletUI(wallet) {
   if (wallet) {
     walletStatus.innerText = "✅ Кошелёк подключён";
@@ -49,7 +46,7 @@ function updateWalletUI(wallet) {
   }
 }
 
-/* ---------- Кнопка подключения ---------- */
+/* Подключение кошелька */
 connectBtn.onclick = async () => {
   if (tonConnectUI.wallet) {
     await tonConnectUI.disconnect();
@@ -59,12 +56,9 @@ connectBtn.onclick = async () => {
   }
 };
 
-/* ---------- Пополнение ---------- */
+/* Пополнение */
 depositBtn.onclick = async () => {
-  if (!tonConnectUI.wallet) {
-    alert("Сначала подключи кошелёк");
-    return;
-  }
+  if (!tonConnectUI.wallet) { alert("Сначала подключи кошелёк"); return; }
 
   const amountTON = 1;
   const amountNano = amountTON * 1e9;
@@ -72,31 +66,24 @@ depositBtn.onclick = async () => {
   try {
     await tonConnectUI.sendTransaction({
       validUntil: Math.floor(Date.now() / 1000) + 300,
-      messages: [
-        {
-          address: OWNER_WALLET,
-          amount: amountNano.toString()
-        }
-      ]
+      messages: [{ address: OWNER_WALLET, amount: amountNano.toString() }]
     });
 
     balance += amountTON;
     document.getElementById("balance").innerText = balance;
     alert("Баланс пополнен!");
-
   } catch {
     alert("Платёж отменён");
   }
 };
 
-/* ---------- Слушаем изменения кошелька ---------- */
+/* Слушаем изменения кошелька */
 tonConnectUI.onStatusChange(wallet => {
   updateWalletUI(wallet);
 });
 
-/* ---------- Навигация ---------- */
+/* Навигация */
 function showPage(page) {
   document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
   document.getElementById(page).classList.add("active");
 }
-
