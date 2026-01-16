@@ -17,7 +17,6 @@ document.addEventListener("DOMContentLoaded", () => {
   /* ---------- Баланс и инвентарь ---------- */
   let balance = 0;
   const inventory = [];
-
   const balanceEl = document.getElementById("balance");
   const balanceProfile = document.getElementById("balance-profile");
   const inventoryEl = document.getElementById("inventory");
@@ -30,10 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /* ---------- Открытие кейса ---------- */
   document.getElementById("open-case").onclick = () => {
-    if (balance < 1) {
-      alert("Недостаточно TON");
-      return;
-    }
+    if (balance < 1) { alert("Недостаточно TON"); return; }
     balance -= 1;
     const rewards = ["🎁 Gift", "💎 Diamond", "⚡ Energy"];
     inventory.push(rewards[Math.floor(Math.random() * rewards.length)]);
@@ -43,13 +39,13 @@ document.addEventListener("DOMContentLoaded", () => {
   /* ---------- TonConnect ---------- */
   const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
     manifestUrl: "https://meek-bubblegum-52c533.netlify.app/tonconnect-manifest.json"
-});
+  });
 
   const walletStatus = document.getElementById("wallet-status");
   const connectBtn = document.getElementById("connect-wallet");
 
   function updateWalletUI(wallet) {
-    if (wallet) {
+    if(wallet){
       walletStatus.textContent = "✅ Кошелёк подключён";
       connectBtn.textContent = "Отключить кошелёк";
     } else {
@@ -58,11 +54,21 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  // Новый обработчик с проверкой и try/catch
   connectBtn.onclick = async () => {
-    if (tonConnectUI.wallet) {
-      await tonConnectUI.disconnect();
-    } else {
-      await tonConnectUI.connectWallet();
+    try {
+      if(tonConnectUI.wallet){
+        await tonConnectUI.disconnect();
+        updateWalletUI(null);
+      } else {
+        // Ждём 100ms перед connect, чтобы Telegram корректно открыл окно
+        await new Promise(r => setTimeout(r, 100));
+        const wallet = await tonConnectUI.connectWallet();
+        updateWalletUI(wallet);
+      }
+    } catch(e){
+      alert("Ошибка подключения кошелька. Попробуйте ещё раз");
+      console.error(e);
     }
   };
 
@@ -70,14 +76,13 @@ document.addEventListener("DOMContentLoaded", () => {
     updateWalletUI(wallet);
   });
 
-  /* ---------- Пополнение (РЕАЛЬНЫЕ TON) ---------- */
+  /* ---------- Пополнение баланса ---------- */
   document.getElementById("deposit").onclick = async () => {
-    if (!tonConnectUI.wallet) {
+    if(!tonConnectUI.wallet){
       alert("Сначала подключите кошелёк");
       return;
     }
-
-    try {
+    try{
       await tonConnectUI.sendTransaction({
         validUntil: Math.floor(Date.now() / 1000) + 300,
         messages: [{
@@ -85,12 +90,11 @@ document.addEventListener("DOMContentLoaded", () => {
           amount: "1000000000" // 1 TON в nanoTON
         }]
       });
-
       balance += 1;
       updateUI();
-      alert("Пополнение успешно!");
-    } catch (e) {
-      alert("Ошибка перевода");
+      alert("Пополнение прошло успешно!");
+    }catch(e){
+      alert("Ошибка перевода: " + e.message);
     }
   };
 
