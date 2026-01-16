@@ -1,48 +1,72 @@
-document.addEventListener("DOMContentLoadeddocument.addEventListener("DOMContentLoaded", () => {
+const tg = window.Telegram.WebApp;
+tg.expand();
 
-  // Проверяем, что TonConnectUI загружен
-  if(typeof TON_CONNECT_UI === "undefined"){
-    alert("Ошибка: библиотека TonConnectUI не подключена!");
+/* ---------- Telegram user ---------- */
+const user = tg.initDataUnsafe.user || {};
+document.getElementById("username").innerText =
+  user.username || user.first_name || "—";
+document.getElementById("user-id").innerText = user.id || "—";
+
+/* ---------- Balance ---------- */
+let balance = 10;
+document.getElementById("balance").innerText = balance;
+
+/* ---------- Inventory ---------- */
+const inventory = document.getElementById("inventory");
+
+/* ---------- Open case ---------- */
+document.getElementById("open-case").onclick = () => {
+  if (balance < 1) {
+    alert("Недостаточно TON");
     return;
   }
+  balance -= 1;
+  document.getElementById("balance").innerText = balance;
 
-  const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
-    manifestUrl: "https://meek-bubblegum-52c533.netlify.app/tonconnect-manifest.json"
-  });
+  const rewards = ["🎁 Gift", "💎 Diamond", "⚡ Energy"];
+  const reward = rewards[Math.floor(Math.random() * rewards.length)];
+  inventory.innerHTML += `<div>${reward}</div>`;
+};
 
-  const walletStatus = document.getElementById("wallet-status");
-  const connectBtn = document.getElementById("connect-wallet");
-
-  function updateWalletUI(wallet){
-    if(wallet){
-      walletStatus.textContent = "✅ Кошелёк подключён";
-      connectBtn.textContent = "Отключить кошелёк";
-    } else {
-      walletStatus.textContent = "❌ Кошелёк не подключён";
-      connectBtn.textContent = "Подключить кошелёк";
-    }
-  }
-
-  // Главное: проверяем объект и используем try/catch
-  connectBtn.onclick = async () => {
-    if(!tonConnectUI){
-      alert("Ошибка: TonConnectUI не инициализирован");
-      return;
-    }
-    try {
-      if(tonConnectUI.wallet){
-        await tonConnectUI.disconnect();
-        updateWalletUI(null);
-      } else {
-        const wallet = await tonConnectUI.connectWallet();
-        updateWalletUI(wallet);
-      }
-    } catch(e){
-      console.error("Ошибка подключения TonConnect:", e);
-      alert("Не удалось подключить кошелек. Проверьте manifest и интернет.");
-    }
-  };
-
-  tonConnectUI.onStatusChange(wallet => updateWalletUI(wallet));
-
+/* ---------- TonConnect ---------- */
+const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+  manifestUrl: "https://meek-bubblegum-52c533.netlify.app/tonconnect-manifest.json"
 });
+
+const walletStatus = document.getElementById("wallet-status");
+const connectBtn = document.getElementById("connect-wallet");
+
+// обновление статуса
+function updateWalletUI(wallet) {
+  if (wallet) {
+    walletStatus.innerText = "✅ Кошелёк подключён";
+    connectBtn.innerText = "🔌 Отключить кошелёк";
+  } else {
+    walletStatus.innerText = "❌ Кошелёк не подключён";
+    connectBtn.innerText = "🔗 Подключить кошелёк";
+  }
+}
+
+// кнопка подключения
+connectBtn.onclick = async () => {
+  if (tonConnectUI.wallet) {
+    await tonConnectUI.disconnect();
+    updateWalletUI(null);
+  } else {
+    await tonConnectUI.connectWallet();
+  }
+};
+
+// слушаем изменения
+tonConnectUI.onStatusChange(wallet => {
+  updateWalletUI(wallet);
+});
+
+/* ---------- Navigation ---------- */
+function showPage(page) {
+  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+  document.getElementById(page).classList.add("active");
+}
+
+document.getElementById("btn-home").onclick = () => showPage("home");
+document.getElementById("btn-profile").onclick = () => showPage("profile");
