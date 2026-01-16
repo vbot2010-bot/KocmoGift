@@ -1,102 +1,98 @@
 document.addEventListener("DOMContentLoaded", () => {
-  // Навигация
-  const btnHome = document.getElementById("btn-home");
-  const btnProfile = document.getElementById("btn-profile");
+
+  /* ---------- Навигация ---------- */
   const home = document.getElementById("home");
   const profile = document.getElementById("profile");
-  home.classList.add("active");
 
-  btnHome.onclick = () => {
+  document.getElementById("btn-home").onclick = () => {
     home.classList.add("active");
     profile.classList.remove("active");
   };
-  btnProfile.onclick = () => {
-    home.classList.remove("active");
+
+  document.getElementById("btn-profile").onclick = () => {
     profile.classList.add("active");
+    home.classList.remove("active");
   };
 
-  // Инвентарь и баланс
+  /* ---------- Баланс и инвентарь ---------- */
   let balance = 0;
-  let inventoryItems = [];
+  const inventory = [];
+
   const balanceEl = document.getElementById("balance");
   const balanceProfile = document.getElementById("balance-profile");
-  const inventoryDiv = document.getElementById("inventory");
+  const inventoryEl = document.getElementById("inventory");
 
   function updateUI() {
     balanceEl.textContent = balance;
     balanceProfile.textContent = balance;
-    inventoryDiv.innerHTML = inventoryItems.map(i => `<div>${i}</div>`).join("");
+    inventoryEl.innerHTML = inventory.map(i => `<div>${i}</div>`).join("");
   }
 
-  // Кейс
-  const openCaseBtn = document.getElementById("open-case");
-  openCaseBtn.onclick = () => {
-    if(balance < 1){
+  /* ---------- Открытие кейса ---------- */
+  document.getElementById("open-case").onclick = () => {
+    if (balance < 1) {
       alert("Недостаточно TON");
       return;
     }
     balance -= 1;
     const rewards = ["🎁 Gift", "💎 Diamond", "⚡ Energy"];
-    const reward = rewards[Math.floor(Math.random() * rewards.length)];
-    inventoryItems.push(reward);
-    alert(`Кейс открыт: ${reward}`);
+    inventory.push(rewards[Math.floor(Math.random() * rewards.length)]);
     updateUI();
-  }
+  };
 
-  // TonConnect
+  /* ---------- TonConnect ---------- */
   const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
-    manifestUrl: "https://meek-bubblegum-52c533.netlify.app//tonconnect-manifest.json"
+    manifestUrl: "https://meek-bubblegum-52c533.netlify.app/tonconnect-manifest.json"
   });
-  let wallet = null;
+
   const walletStatus = document.getElementById("wallet-status");
   const connectBtn = document.getElementById("connect-wallet");
-  const depositBtn = document.getElementById("deposit");
 
-  function updateWalletUI() {
-    if(wallet){
-      walletStatus.textContent = `✅ Кошелек: ${wallet.account}`;
-      connectBtn.textContent = "Отключить кошелек";
+  function updateWalletUI(wallet) {
+    if (wallet) {
+      walletStatus.textContent = "✅ Кошелёк подключён";
+      connectBtn.textContent = "Отключить кошелёк";
     } else {
-      walletStatus.textContent = "❌ Кошелек не подключён";
-      connectBtn.textContent = "Подключить кошелек";
+      walletStatus.textContent = "❌ Кошелёк не подключён";
+      connectBtn.textContent = "Подключить кошелёк";
     }
   }
 
   connectBtn.onclick = async () => {
-    if(wallet){
+    if (tonConnectUI.wallet) {
       await tonConnectUI.disconnect();
-      wallet = null;
-      updateWalletUI();
     } else {
-      wallet = await tonConnectUI.connectWallet();
-      updateWalletUI();
+      await tonConnectUI.connectWallet();
     }
-  }
+  };
 
-  tonConnectUI.onStatusChange((newWallet) => {
-    wallet = newWallet;
-    updateWalletUI();
+  tonConnectUI.onStatusChange(wallet => {
+    updateWalletUI(wallet);
   });
 
-  // Пополнение реального TON
-  depositBtn.onclick = async () => {
-    if(!wallet){
-      alert("Сначала подключите кошелек");
+  /* ---------- Пополнение (РЕАЛЬНЫЕ TON) ---------- */
+  document.getElementById("deposit").onclick = async () => {
+    if (!tonConnectUI.wallet) {
+      alert("Сначала подключите кошелёк");
       return;
     }
+
     try {
-      const tx = await wallet.sendTransaction({
-        to: "UQAFXBXzBzau6ZCWzruiVrlTg3HAc8MF6gKIntqTLDifuWOi",
-        value: 1 // 1 TON
+      await tonConnectUI.sendTransaction({
+        validUntil: Math.floor(Date.now() / 1000) + 300,
+        messages: [{
+          address: "UQAFXBXzBzau6ZCWzruiVrlTg3HAc8MF6gKIntqTLDifuWOi",
+          amount: "1000000000" // 1 TON в nanoTON
+        }]
       });
+
       balance += 1;
       updateUI();
-      alert("Пополнение прошло успешно!");
-    } catch(e) {
-      alert("Ошибка: " + e.message);
+      alert("Пополнение успешно!");
+    } catch (e) {
+      alert("Ошибка перевода");
     }
-  }
+  };
 
   updateUI();
-  updateWalletUI();
 });
