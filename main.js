@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-  // Телеграм
+  // Telegram Mini App
   const tg = window.Telegram.WebApp;
   tg.expand();
 
@@ -18,23 +18,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Навигация
   const pages = { home: "home", profile: "profile" };
-  document.getElementById("btn-home").addEventListener("click", () => {
-    document.getElementById(pages.profile).classList.remove("active");
-    document.getElementById(pages.home).classList.add("active");
-  });
-  document.getElementById("btn-profile").addEventListener("click", () => {
-    document.getElementById(pages.home).classList.remove("active");
-    document.getElementById(pages.profile).classList.add("active");
-  });
+  const showPage = (pageId) => {
+    Object.values(pages).forEach(p => document.getElementById(p).classList.remove("active"));
+    document.getElementById(pageId).classList.add("active");
+  };
+
+  document.getElementById("btn-home").addEventListener("click", () => showPage(pages.home));
+  document.getElementById("btn-profile").addEventListener("click", () => showPage(pages.profile));
 
   // TonConnect
-  const OWNER_WALLET = "UQAFXBXzBzau6ZCWzruiVrlTg3HAc8MF6gKIntqTLDifuWOi";
+  const OWNER_WALLET = "UQAFXBXzBzau6ZCWzruiVrlTg3HAc8MF6gKIntqTLDifuWOi"; // замените на ваш TON кошелек
   const walletStatus = document.getElementById("wallet-status");
   const connectBtn = document.getElementById("connect-wallet");
   const depositBtn = document.getElementById("deposit");
 
   const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
-    manifestUrl: "https://kocmo-gift.vercel.app//tonconnect-manifest.json"
+    manifestUrl: "https://kocmo-gift-git-main-kocmogift.vercel.app//tonconnect-manifest.json"
   });
 
   function updateWalletUI(wallet) {
@@ -72,16 +71,19 @@ document.addEventListener("DOMContentLoaded", () => {
       balanceEl.innerText = balance;
       alert("Баланс пополнен!");
     } catch {
-      alert("Платеж отменён");
+      alert("Платёж отменён");
     }
   });
 
+  // Открытие кейсов
   document.getElementById("open-case").addEventListener("click", () => {
     if(balance < 1) { alert("Недостаточно TON"); return; }
     balance -= 1;
     balanceEl.innerText = balance;
+
     const rewards = ["🎁 Gift", "💎 Diamond", "⚡ Energy"];
     const reward = rewards[Math.floor(Math.random() * rewards.length)];
     inventory.innerHTML += `<div>${reward}</div>`;
   });
+
 });
