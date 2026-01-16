@@ -6,31 +6,32 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>KocmoGift 🎁</h1>
 
-  <div class="nav">
-    <button id="btn-home">Главная</button>
-    <button id="btn-profile">Профиль</button>
-  </div>
+<h1>KocmoGift 🎁</h1>
 
-  <!-- Главная -->
-  <div id="home" class="page">
-    <p>Баланс: <span id="balance">0</span> TON</p>
-    <button id="open-case">Открыть кейс</button>
-    <button id="deposit">Пополнить 1 TON</button>
-    <p id="wallet-status">Кошелек не подключён</p>
-    <button id="connect-wallet">Подключить кошелек</button>
-  </div>
+<div class="nav">
+  <button id="btn-home">Главная</button>
+  <button id="btn-profile">Профиль</button>
+</div>
 
-  <!-- Профиль -->
-  <div id="profile" class="page">
-    <h2>Профиль пользователя</h2>
-    <p>Баланс: <span id="balance-profile">0</span> TON</p>
-    <p>Инвентарь:</p>
-    <div id="inventory"></div>
-  </div>
+<div id="home" class="page active">
+  <p>Баланс: <span id="balance">0</span> TON</p>
 
-  <script src="https://cdn.jsdelivr.net/npm/@tonconnect/ui@0.9.10/dist/tonconnect-ui.min.js"></script>
-  <script src="main.js"></script>
+  <button id="open-case">Открыть кейс (1 TON)</button>
+  <button id="deposit">Пополнить 1 TON</button>
+
+  <p id="wallet-status">❌ Кошелёк не подключён</p>
+  <button id="connect-wallet">Подключить кошелёк</button>
+</div>
+
+<div id="profile" class="page">
+  <h2>Профиль</h2>
+  <p>Баланс: <span id="balance-profile">0</span> TON</p>
+  <h3>Инвентарь</h3>
+  <div id="inventory"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@tonconnect/ui@0.9.10/dist/tonconnect-ui.min.js"></script>
+<script src="main.js"></script>
 </body>
 </html>
