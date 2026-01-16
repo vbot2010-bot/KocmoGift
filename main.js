@@ -59,9 +59,7 @@ connectBtn.onclick = async () => {
 
 // слушаем изменения
 tonConnectUI.onStatusChange(wallet => {
-  updateWalletUI(wallet);
-});
-UQAFXBXzBzau6ZCWzruiVrlTg3HAc8MF6gKIntqTLDifuWOi
+  updateWalletUI(wallet);}):
 
 /* ---------- Navigation ---------- */
 function showPage(page) {
