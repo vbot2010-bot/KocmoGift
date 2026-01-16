@@ -30,7 +30,7 @@ document.getElementById("open-case").onclick = () => {
 
 /* ---------- TonConnect ---------- */
 const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
-  manifestUrl: "https://kocmo-gift-ikim453bs-kocmogift.vercel.app/tonconnect-manifest.json"
+  manifestUrl: "https://kocmo-gift-git-main-kocmogift.vercel.app//tonconnect-manifest.json"
 });
 
 const walletStatus = document.getElementById("wallet-status");
