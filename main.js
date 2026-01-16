@@ -1,35 +1,45 @@
-// Инициализация Telegram WebApp
 const tg = window.Telegram.WebApp;
-tg.expand(); // расширяем окно
+tg.expand();
 
-// Получаем данные пользователя из Telegram
-const user = window.Telegram.WebApp.initDataUnsafe.user;
-document.getElementById("username").innerText = user.username || user.first_name;
+// Telegram user
+const user = tg.initDataUnsafe.user;
 
-// Баланс пользователя (для примера 10 TON)
+document.getElementById("username").innerText =
+  user?.username || user?.first_name || "—";
+
+document.getElementById("user-id").innerText = user?.id || "—";
+
+// Balance
 let balance = 10;
-document.getElementById("balance").innerText = balance.toFixed(2);
+document.getElementById("balance").innerText = balance;
 
-// Инвентарь
-const inventoryDiv = document.getElementById("inventory");
+// Inventory
+const inventory = document.getElementById("inventory");
 
-// Кнопка открыть кейс
-document.getElementById("open-case").addEventListener("click", () => {
-  if(balance < 0.25){
-    alert("Недостаточно TON для открытия кейса!");
+// Open case
+document.getElementById("open-case").onclick = () => {
+  if (balance < 1) {
+    alert("Недостаточно TON");
     return;
   }
 
-  // Снимаем стоимость кейса
-  balance -= 0.25;
-  document.getElementById("balance").innerText = balance.toFixed(2);
+  balance -= 1;
+  document.getElementById("balance").innerText = balance;
 
-  // Генерируем случайный кейс
-  const rewards = ["🎁 Подарок", "💎 Алмаз", "⚡ Энергия"];
+  const rewards = ["🎁 Gift", "💎 Diamond", "⚡ Energy"];
   const reward = rewards[Math.floor(Math.random() * rewards.length)];
 
-  // Добавляем в инвентарь
-  const p = document.createElement("p");
-  p.innerText = reward;
-  inventoryDiv.appendChild(p);
-});
+  inventory.innerHTML += `<div>${reward}</div>`;
+};
+
+// Wallet (заглушка)
+document.getElementById("connect-wallet").onclick = () => {
+  document.getElementById("wallet-status").innerText =
+    "✅ Кошелёк будет подключён позже";
+};
+
+// Navigation
+function showPage(page) {
+  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+  document.getElementById(page).classList.add("active");
+  }
