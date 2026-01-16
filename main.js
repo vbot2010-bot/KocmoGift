@@ -1,89 +1,45 @@
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoadedconst tg = window.Telegram.WebApp;
+tg.expand();
 
-  // Telegram Mini App
-  const tg = window.Telegram.WebApp;
-  tg.expand();
+// Telegram user
+const user = tg.initDataUnsafe.user;
 
-  const user = tg.initDataUnsafe.user || {};
-  document.getElementById("username").innerText = user.username || user.first_name || "—";
-  document.getElementById("user-id").innerText = user.id || "—";
+document.getElementById("username").innerText =
+  user?.username || user?.first_name || "—";
 
-  // Баланс
-  let balance = 10;
-  const balanceEl = document.getElementById("balance");
-  balanceEl.innerText = balance;
+document.getElementById("user-id").innerText = user?.id || "—";
 
-  // Инвентарь
-  const inventory = document.getElementById("inventory");
+// Balance
+let balance = 10;
+document.getElementById("balance").innerText = balance;
 
-  // Навигация
-  const pages = { home: "home", profile: "profile" };
-  const showPage = (pageId) => {
-    Object.values(pages).forEach(p => document.getElementById(p).classList.remove("active"));
-    document.getElementById(pageId).classList.add("active");
-  };
+// Inventory
+const inventory = document.getElementById("inventory");
 
-  document.getElementById("btn-home").addEventListener("click", () => showPage(pages.home));
-  document.getElementById("btn-profile").addEventListener("click", () => showPage(pages.profile));
-
-  // TonConnect
-  const OWNER_WALLET = "UQAFXBXzBzau6ZCWzruiVrlTg3HAc8MF6gKIntqTLDifuWOi"; // замените на ваш TON кошелек
-  const walletStatus = document.getElementById("wallet-status");
-  const connectBtn = document.getElementById("connect-wallet");
-  const depositBtn = document.getElementById("deposit");
-
-  const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
-    manifestUrl: "https://kocmo-gift-git-main-kocmogift.vercel.app//tonconnect-manifest.json"
-  });
-
-  function updateWalletUI(wallet) {
-    if(wallet) {
-      walletStatus.innerText = "✅ Кошелёк подключён";
-      connectBtn.innerText = "🔌 Отключить кошелёк";
-    } else {
-      walletStatus.innerText = "❌ Кошелёк не подключён";
-      connectBtn.innerText = "🔗 Подключить кошелёк";
-    }
+// Open case
+document.getElementById("open-case").onclick = () => {
+  if (balance < 1) {
+    alert("Недостаточно TON");
+    return;
   }
 
-  tonConnectUI.onStatusChange(wallet => updateWalletUI(wallet));
-  updateWalletUI(tonConnectUI.wallet);
+  balance -= 1;
+  document.getElementById("balance").innerText = balance;
 
-  connectBtn.addEventListener("click", async () => {
-    if(tonConnectUI.wallet) {
-      await tonConnectUI.disconnect();
-      updateWalletUI(null);
-    } else {
-      await tonConnectUI.connectWallet();
-    }
-  });
+  const rewards = ["🎁 Gift", "💎 Diamond", "⚡ Energy"];
+  const reward = rewards[Math.floor(Math.random() * rewards.length)];
 
-  depositBtn.addEventListener("click", async () => {
-    if(!tonConnectUI.wallet) { alert("Сначала подключи кошелек"); return; }
-    const amountTON = 1;
-    const amountNano = amountTON * 1e9;
-    try {
-      await tonConnectUI.sendTransaction({
-        validUntil: Math.floor(Date.now() / 1000) + 300,
-        messages: [{ address: OWNER_WALLET, amount: amountNano.toString() }]
-      });
-      balance += amountTON;
-      balanceEl.innerText = balance;
-      alert("Баланс пополнен!");
-    } catch {
-      alert("Платёж отменён");
-    }
-  });
+  inventory.innerHTML += `<div>${reward}</div>`;
+};
 
-  // Открытие кейсов
-  document.getElementById("open-case").addEventListener("click", () => {
-    if(balance < 1) { alert("Недостаточно TON"); return; }
-    balance -= 1;
-    balanceEl.innerText = balance;
+// Wallet (заглушка)
+document.getElementById("connect-wallet").onclick = () => {
+  document.getElementById("wallet-status").innerText =
+    "✅ Кошелёк будет подключён позже";
+};
 
-    const rewards = ["🎁 Gift", "💎 Diamond", "⚡ Energy"];
-    const reward = rewards[Math.floor(Math.random() * rewards.length)];
-    inventory.innerHTML += `<div>${reward}</div>`;
-  });
-
-});
+// Navigation
+function showPage(page) {
+  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+  document.getElementById(page).classList.add("active");
+}
