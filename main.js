@@ -66,7 +66,7 @@
       return;
     }
     try {
-      if(tonConnectUI.wallet){
+      if (tonConnectUI.wallet) {
         await tonConnectUI.disconnect();
         updateWalletUI(null);
       } else {
@@ -74,7 +74,7 @@
         updateWalletUI(wallet);
       }
     } catch(e){
-      alert("Ошибка подключения кошелька. Попробуйте ещё раз");
+      alert("Ошибка подключения кошелька. Попробуйте ещё раз.");
       console.error(e);
     }
   };
@@ -83,7 +83,7 @@
 
   /* ---------- Пополнение баланса ---------- */
   document.getElementById("deposit").onclick = async () => {
-    if(!tonConnectUI.wallet){
+    if (!tonConnectUI.wallet) {
       alert("Сначала подключите кошелёк");
       return;
     }
@@ -92,7 +92,7 @@
         validUntil: Math.floor(Date.now() / 1000) + 300,
         messages: [{
           address: "UQAFXBXzBzau6ZCWzruiVrlTg3HAc8MF6gKIntqTLDifuWOi",
-          amount: "1000000000" // 1 TON
+          amount: "1000000000"
         }]
       });
       balance += 1;
