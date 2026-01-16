@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const depositBtn = document.getElementById("deposit");
 
   const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
-    manifestUrl: "https://kocmo-gift-git-main-kocmogift.vercel.app/tonconnect-manifest.json"
+    manifestUrl: "https://kocmo-gift.vercel.app//tonconnect-manifest.json"
   });
 
   function updateWalletUI(wallet) {
