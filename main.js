@@ -1,72 +1,102 @@
-const tg = window.Telegram.WebApp;
-tg.expand();
+document.addEventListener("DOMContentLoaded", () => {
 
-/* ---------- Telegram user ---------- */
-const user = tg.initDataUnsafe.user || {};
-document.getElementById("username").innerText =
-  user.username || user.first_name || "—";
-document.getElementById("user-id").innerText = user.id || "—";
+  /* ---------- Навигация ---------- */
+  const home = document.getElementById("home");
+  const profile = document.getElementById("profile");
 
-/* ---------- Balance ---------- */
-let balance = 10;
-document.getElementById("balance").innerText = balance;
+  document.getElementById("btn-home").onclick = () => {
+    home.classList.add("active");
+    profile.classList.remove("active");
+  };
 
-/* ---------- Inventory ---------- */
-const inventory = document.getElementById("inventory");
+  document.getElementById("btn-profile").onclick = () => {
+    profile.classList.add("active");
+    home.classList.remove("active");
+  };
 
-/* ---------- Open case ---------- */
-document.getElementById("open-case").onclick = () => {
-  if (balance < 1) {
-    alert("Недостаточно TON");
-    return;
+  /* ---------- Баланс и инвентарь ---------- */
+  let balance = 0;
+  const inventory = [];
+  const balanceEl = document.getElementById("balance");
+  const balanceProfile = document.getElementById("balance-profile");
+  const inventoryEl = document.getElementById("inventory");
+
+  function updateUI() {
+    balanceEl.textContent = balance;
+    balanceProfile.textContent = balance;
+    inventoryEl.innerHTML = inventory.map(i => `<div>${i}</div>`).join("");
   }
-  balance -= 1;
-  document.getElementById("balance").innerText = balance;
 
-  const rewards = ["🎁 Gift", "💎 Diamond", "⚡ Energy"];
-  const reward = rewards[Math.floor(Math.random() * rewards.length)];
-  inventory.innerHTML += `<div>${reward}</div>`;
-};
+  /* ---------- Открытие кейса ---------- */
+  document.getElementById("open-case").onclick = () => {
+    if (balance < 1) { alert("Недостаточно TON"); return; }
+    balance -= 1;
+    const rewards = ["🎁 Gift", "💎 Diamond", "⚡ Energy"];
+    inventory.push(rewards[Math.floor(Math.random() * rewards.length)]);
+    updateUI();
+  };
 
-/* ---------- TonConnect ---------- */
-const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
-  manifestUrl: "https://meek-bubblegum-52c533.netlify.app/tonconnect-manifest.json"
+  /* ---------- TonConnect ---------- */
+  const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+    manifestUrl: "https://meek-bubblegum-52c533.netlify.app/tonconnect-manifest.json"
+  });
+
+  const walletStatus = document.getElementById("wallet-status");
+  const connectBtn = document.getElementById("connect-wallet");
+
+  function updateWalletUI(wallet) {
+    if(wallet){
+      walletStatus.textContent = "✅ Кошелёк подключён";
+      connectBtn.textContent = "Отключить кошелёк";
+    } else {
+      walletStatus.textContent = "❌ Кошелёк не подключён";
+      connectBtn.textContent = "Подключить кошелёк";
+    }
+  }
+
+  // Новый обработчик с проверкой и try/catch
+  connectBtn.onclick = async () => {
+    try {
+      if(tonConnectUI.wallet){
+        await tonConnectUI.disconnect();
+        updateWalletUI(null);
+      } else {
+        // Ждём 100ms перед connect, чтобы Telegram корректно открыл окно
+        await new Promise(r => setTimeout(r, 100));
+        const wallet = await tonConnectUI.connectWallet();
+        updateWalletUI(wallet);
+      }
+    } catch(e){
+      alert("Ошибка подключения кошелька. Попробуйте ещё раз");
+      console.error(e);
+    }
+  };
+
+  tonConnectUI.onStatusChange(wallet => {
+    updateWalletUI(wallet);
+  });
+
+  /* ---------- Пополнение баланса ---------- */
+  document.getElementById("deposit").onclick = async () => {
+    if(!tonConnectUI.wallet){
+      alert("Сначала подключите кошелёк");
+      return;
+    }
+    try{
+      await tonConnectUI.sendTransaction({
+        validUntil: Math.floor(Date.now() / 1000) + 300,
+        messages: [{
+          address: "UQAFXBXzBzau6ZCWzruiVrlTg3HAc8MF6gKIntqTLDifuWOi",
+          amount: "1000000000" // 1 TON в nanoTON
+        }]
+      });
+      balance += 1;
+      updateUI();
+      alert("Пополнение прошло успешно!");
+    }catch(e){
+      alert("Ошибка перевода: " + e.message);
+    }
+  };
+
+  updateUI();
 });
-
-const walletStatus = document.getElementById("wallet-status");
-const connectBtn = document.getElementById("connect-wallet");
-
-// обновление статуса
-function updateWalletUI(wallet) {
-  if (wallet) {
-    walletStatus.innerText = "✅ Кошелёк подключён";
-    connectBtn.innerText = "🔌 Отключить кошелёк";
-  } else {
-    walletStatus.innerText = "❌ Кошелёк не подключён";
-    connectBtn.innerText = "🔗 Подключить кошелёк";
-  }
-}
-
-// кнопка подключения
-connectBtn.onclick = async () => {
-  if (tonConnectUI.wallet) {
-    await tonConnectUI.disconnect();
-    updateWalletUI(null);
-  } else {
-    await tonConnectUI.connectWallet();
-  }
-};
-
-// слушаем изменения
-tonConnectUI.onStatusChange(wallet => {
-  updateWalletUI(wallet);
-});
-
-/* ---------- Navigation ---------- */
-function showPage(page) {
-  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
-  document.getElementById(page).classList.add("active");
-}
-
-document.getElementById("btn-home").onclick = () => showPage("home");
-document.getElementById("btn-profile").onclick = () => showPage("profile");
