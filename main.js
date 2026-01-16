@@ -1,31 +1,26 @@
-document.addEventListener("DOMContentLoaded", () => {
-  console.log("JS OK");
+body {
+  font-family: Arial, sans-serif;
+  background: #f2f2f2;
+  text-align: center;
+  margin: 0;
+  padding: 20px;
+}
 
-  const homeBtn = document.getElementById("btn-home");
-  const profileBtn = document.getElementById("btn-profile");
-  const openCaseBtn = document.getElementById("open-case");
+.nav {
+  margin-bottom: 20px;
+}
 
-  const home = document.getElementById("home");
-  const profile = document.getElementById("profile");
+button {
+  padding: 10px 20px;
+  margin: 5px;
+  font-size: 16px;
+  cursor: pointer;
+}
 
-  if (!homeBtn || !profileBtn || !openCaseBtn || !home || !profile) {
-    alert("HTML IDs не совпадают");
-    return;
-  }
+.page {
+  display: none;
+}
 
-  profile.style.display = "none";
-
-  homeBtn.onclick = () => {
-    home.style.display = "block";
-    profile.style.display = "none";
-  };
-
-  profileBtn.onclick = () => {
-    home.style.display = "none";
-    profile.style.display = "block";
-  };
-
-  openCaseBtn.onclick = () => {
-    alert("Кейс открылся ✅");
-  };
-});
+.page.active {
+  display: block;
+}
