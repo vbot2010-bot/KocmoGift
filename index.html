@@ -5,7 +5,7 @@
   <title>KocmoGift</title>
   <link rel="stylesheet" href="style.css">
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-<script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
+  <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
 </head>
 <body>
 
@@ -19,9 +19,6 @@
     <h3>Главная</h3>
     <p>Баланс: <span id="balance">10</span> TON</p>
     <button id="open-case">🎁 Открыть кейс</button>
-
-    <h4>Инвентарь</h4>
-    <div id="inventory">Пусто</div>
   </div>
 
   <div id="profile" class="page">
@@ -29,8 +26,16 @@
     <p>ID: <span id="user-id"></span></p>
     <p>Username: <span id="username"></span></p>
 
+    <!-- TON кошелёк -->
     <button id="connect-wallet">🔗 Подключить кошелёк</button>
     <p id="wallet-status">Кошелёк не подключён</p>
+
+    <!-- Пополнение -->
+    <button id="deposit">💎 Пополнить баланс</button>
+
+    <!-- Инвентарь -->
+    <h4>Инвентарь</h4>
+    <div id="inventory">Пусто</div>
   </div>
 
   <!-- NAVBAR -->
@@ -42,4 +47,3 @@
   <script src="main.js"></script>
 </body>
 </html>
-<button id="deposit">💎 Пополнить баланс</button>
