@@ -1,41 +1,14 @@
-const tg = window.Telegram.WebApp;
-tg.expand();
-
-/* Telegram user */
-const user = tg.initDataUnsafe.user || {};
-document.getElementById("username").innerText =
-  user.username || user.first_name || "—";
-document.getElementById("user-id").innerText = user.id || "—";
-
-/* Balance */
-let balance = 10;
-document.getElementById("balance").innerText = balance;
-
-/* Inventory */
-const inventory = document.getElementById("inventory");
-
-/* Open case */
-document.getElementById("open-case").onclick = () => {
-  if (balance < 1) { alert("Недостаточно TON"); return; }
-  balance -= 1;
-  document.getElementById("balance").innerText = balance;
-
-  const rewards = ["🎁 Gift", "💎 Diamond", "⚡ Energy"];
-  const reward = rewards[Math.floor(Math.random() * rewards.length)];
-  inventory.innerHTML += `<div>${reward}</div>`;
-};
-
-/* TonConnect */
+// Инициализация TonConnect
 const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
   manifestUrl: "https://kocmo-gift-git-main-kocmogift.vercel.app/tonconnect-manifest.json"
 });
 
+// Селекторы
 const walletStatus = document.getElementById("wallet-status");
 const connectBtn = document.getElementById("connect-wallet");
-const OWNER_WALLET = "UQAFXBXzBzau6ZCWzruiVrlTg3HAc8MF6gKIntqTLDifuWOi";
-const depositBtn = document.getElementById("deposit");
+const OWNER_WALLET = "ВАШ_TON_АДРЕС"; // твой кошелёк для пополнений
 
-/* UI обновление */
+// Обновление UI
 function updateWalletUI(wallet) {
   if (wallet) {
     walletStatus.innerText = "✅ Кошелёк подключён";
@@ -46,7 +19,7 @@ function updateWalletUI(wallet) {
   }
 }
 
-/* Подключение кошелька */
+// Кнопка подключения
 connectBtn.onclick = async () => {
   if (tonConnectUI.wallet) {
     await tonConnectUI.disconnect();
@@ -56,8 +29,8 @@ connectBtn.onclick = async () => {
   }
 };
 
-/* Пополнение */
-depositBtn.onclick = async () => {
+// Пополнение
+document.getElementById("deposit").onclick = async () => {
   if (!tonConnectUI.wallet) { alert("Сначала подключи кошелёк"); return; }
 
   const amountTON = 1;
@@ -69,21 +42,16 @@ depositBtn.onclick = async () => {
       messages: [{ address: OWNER_WALLET, amount: amountNano.toString() }]
     });
 
-    balance += amountTON;
-    document.getElementById("balance").innerText = balance;
     alert("Баланс пополнен!");
   } catch {
     alert("Платёж отменён");
   }
 };
 
-/* Слушаем изменения кошелька */
+// Слушаем изменения кошелька
 tonConnectUI.onStatusChange(wallet => {
   updateWalletUI(wallet);
 });
 
-/* Навигация */
-function showPage(page) {
-  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
-  document.getElementById(page).classList.add("active");
-}
+// Изначально обновляем статус
+updateWalletUI(tonConnectUI.wallet);
