@@ -1,5 +1,4 @@
-/* ===== Общие стили ===== */
-body {
+  body {
   font-family: Arial, sans-serif;
   background-color: #f5f5f5;
   color: #222;
@@ -16,7 +15,7 @@ body {
   box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
-/* ===== Навигация ===== */
+/* Навигация */
 .nav {
   display: flex;
   justify-content: space-around;
@@ -34,20 +33,13 @@ body {
   transition: background-color 0.2s;
 }
 
-.nav button:hover {
-  background-color: #0056b3;
-}
+.nav button:hover { background-color: #0056b3; }
 
-/* ===== Страницы ===== */
-.page {
-  display: none; /* все страницы скрыты */
-}
+/* Страницы */
+.page { display: none; }
+.page.active { display: block; }
 
-.page.active {
-  display: block; /* активная страница видна */
-}
-
-/* ===== Кнопки внутри страниц ===== */
+/* Кнопки */
 button {
   padding: 10px 20px;
   margin: 5px 0;
@@ -60,11 +52,9 @@ button {
   transition: background-color 0.2s;
 }
 
-button:hover {
-  background-color: #218838;
-}
+button:hover { background-color: #218838; }
 
-/* ===== Инвентарь ===== */
+/* Инвентарь */
 #inventory {
   margin-top: 10px;
   padding: 10px;
@@ -79,4 +69,4 @@ button:hover {
   margin: 3px 0;
   background-color: #e9ecef;
   border-radius: 6px;
-  }
+}
