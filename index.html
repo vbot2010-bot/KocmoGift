@@ -2,23 +2,42 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>KocmoGift 🎁</title>
+  <title>KocmoGift</title>
   <link rel="stylesheet" href="style.css">
-<script src="main.js"></script>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
-  <div class="container">
-    <h1>KocmoGift 🎁</h1>
-    <div id="user-info">
-      <p>Пользователь: <span id="username"></span></p>
-      <p>Баланс: <span id="balance">10</span> TON</p>
-    </div>
-    <button id="open-case">Открыть кейс</button>
-    <h2>Инвентарь</h2>
-    <div id="inventory">
-      <p>Пока пусто</p>
-    </div>
+
+  <!-- HEADER -->
+  <div class="header">
+    <h2>KocmoGift 🎁</h2>
   </div>
+
+  <!-- PAGES -->
+  <div id="home" class="page active">
+    <h3>Главная</h3>
+    <p>Баланс: <span id="balance">10</span> TON</p>
+    <button id="open-case">🎁 Открыть кейс</button>
+
+    <h4>Инвентарь</h4>
+    <div id="inventory">Пусто</div>
+  </div>
+
+  <div id="profile" class="page">
+    <h3>Профиль</h3>
+    <p>ID: <span id="user-id"></span></p>
+    <p>Username: <span id="username"></span></p>
+
+    <button id="connect-wallet">🔗 Подключить кошелёк</button>
+    <p id="wallet-status">Кошелёк не подключён</p>
+  </div>
+
+  <!-- NAVBAR -->
+  <div class="nav">
+    <button onclick="showPage('home')">🏠 Главная</button>
+    <button onclick="showPage('profile')">👤 Профиль</button>
+  </div>
+
   <script src="main.js"></script>
 </body>
 </html>
