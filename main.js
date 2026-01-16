@@ -1,11 +1,19 @@
 document.addEventListener("DOMContentLoaded", () => {
-  console.log("JS WORKS");
+  console.log("JS OK");
 
   const homeBtn = document.getElementById("btn-home");
   const profileBtn = document.getElementById("btn-profile");
+  const openCaseBtn = document.getElementById("open-case");
 
   const home = document.getElementById("home");
   const profile = document.getElementById("profile");
+
+  if (!homeBtn || !profileBtn || !openCaseBtn || !home || !profile) {
+    alert("HTML IDs не совпадают");
+    return;
+  }
+
+  profile.style.display = "none";
 
   homeBtn.onclick = () => {
     home.style.display = "block";
@@ -17,8 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
     profile.style.display = "block";
   };
 
-  const openCase = document.getElementById("open-case");
-  openCase.onclick = () => {
-    alert("Кейс открылся");
+  openCaseBtn.onclick = () => {
+    alert("Кейс открылся ✅");
   };
 });
