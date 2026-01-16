@@ -1,46 +1,33 @@
     body {
-  margin: 0;
   font-family: Arial, sans-serif;
-  background: #0f0f0f;
-  color: white;
+  text-align: center;
+  margin: 0;
+  padding: 20px;
+  background: #f2f2f2;
 }
 
-.header {
-  text-align: center;
-  padding: 15px;
-  background: #1c1c1c;
+.nav {
+  margin-bottom: 20px;
+}
+
+button {
+  padding: 10px 20px;
+  margin: 5px;
+  font-size: 16px;
+  cursor: pointer;
 }
 
 .page {
   display: none;
-  padding: 20px;
 }
 
 .page.active {
   display: block;
 }
 
-button {
-  width: 100%;
-  padding: 12px;
-  margin-top: 10px;
-  border: none;
-  border-radius: 8px;
-  background: #ff9800;
-  color: black;
-  font-size: 16px;
-}
-
-.nav {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  display: flex;
-  background: #1c1c1c;
-}
-
-.nav button {
-  flex: 1;
-  background: none;
-  color: white;
+#inventory div {
+  margin: 5px;
+  padding: 5px;
+  border: 1px solid #888;
+  display: inline-block;
 }
